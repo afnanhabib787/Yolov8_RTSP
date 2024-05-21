@@ -44,7 +44,6 @@ class Tracker:
                             track_id = None
                             if box.id is not None:
                                 track_id = int(box.id.cpu().tolist()[0])
-                                print("track id: ", track_id)
                                 if track_id not in self.last_known_positions:
                                     self.last_known_positions[track_id] = (0, 0, 0, 0)  # Initialize with an empty position
 
@@ -55,7 +54,7 @@ class Tracker:
 
                                 # Get or generate a unique color for the label
                                 if track_id not in self.id_colors:
-                                    self.id_colors[track_id] = self.color_generator.generate_color(list(self.id_colors.values()), track_id, avoid_color=(255, 0, 0))
+                                    self.id_colors[track_id] = self.color_generator.generate_color(list(self.id_colors.values()), avoid_color=(255, 0, 0))
                                 
                                 color = self.id_colors[track_id]
 
@@ -72,14 +71,14 @@ class Tracker:
                                     elapsed_time = (timer_now - self.timer_start) / cv2.getTickFrequency()  # Calculate elapsed time in seconds
 
                                     text_width, text_height = cv2.getTextSize(f"Timer: {elapsed_time:.2f}s", cv2.FONT_HERSHEY_SIMPLEX, 0.6, 1)[0]
-                                    text_x = left + (width - text_width) // 2
+                                    text_x = (left + (width - text_width) // 2) + 75
                                     text_y = top - text_height // 2
 
                                     # Display the timer at the top of the display window
                                     cv2.putText(frame, f"Timer: {elapsed_time:.2f}s", (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv2.LINE_AA)
 
                                 cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
-                                cv2.putText(frame, f"{label} {track_id}", (left, top), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv2.LINE_AA)
+                                cv2.putText(frame, f"{label} {track_id}", (left, top-5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv2.LINE_AA)
                                 cv2.putText(frame, f"confidence: {confidence:.2f}", (left, bottom+20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv2.LINE_AA)
 
                 # If the selected track ID was not detected, draw the bounding box at the last known position
@@ -109,7 +108,7 @@ class Tracker:
             # Reset the color of the previously selected box
             if self.prev_selected_track_id is not None:
                 existing_colors = list(self.id_colors.values())
-                color = self.color_generator.generate_color(existing_colors, self.prev_selected_track_id, avoid_color=(255, 0, 0))
+                color = self.color_generator.generate_color(existing_colors, avoid_color=(255, 0, 0))
                 self.id_colors[self.prev_selected_track_id.cpu().tolist()[0]] = color
 
             # Check if the click is inside any bounding box
