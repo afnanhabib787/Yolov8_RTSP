@@ -34,6 +34,12 @@ This project is an implementation of an person tracker using the YOLOv8 model. T
 
 3. Ensure you have YOLOv8 model and related files in your project directory or adjust the code to load the model from your desired location.
 
+4. Create a `.env` file in the root of the project with the following content:
+
+    ```env
+    RTSP_ADDRESS=rtsp://username:password@ip_address:port/h264_ulaw.sdp
+    NETWORK_ADDRESS=http://ip_address:port/video
+    
 ## Usage
 
 ```
